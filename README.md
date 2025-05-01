@@ -5,6 +5,11 @@
 - `DPABI_V9.0_250415`
 - `REST_V1.8_130615`
 
+### Requirements
+- MATLAB 2024b
+- Python 3.12
+- `requirements.txt`
+
 ### Design
 #### JSONInput
 使用json包实现该类。相较类图，已移除`validate_format`和`parse_content`函数
@@ -12,4 +17,4 @@
 - 使用下标访问获取json中的内容。也可直接获取类中的`parameters: dict`参数
 
 #### MatlabInterface
-无需打开GUI，尝试直接调用对应函数`DPARSF_run`和`DPARSFA_run`并传参
+直接使用Matlab提供的matlabengine包
