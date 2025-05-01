@@ -1,6 +1,9 @@
 # NeuroPipe
 ### External
-需要将课程提供的`sub-02CB`数据放至本项目中
+需要将以下内容放至本目录中：
+- 课程提供的`sub-02CB`数据
+- `DPABI_V9.0_250415`
+- `REST_V1.8_130615`
 
 ### Design
 #### JSONInput
