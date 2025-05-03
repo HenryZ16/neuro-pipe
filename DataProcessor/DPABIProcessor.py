@@ -3,6 +3,10 @@ import os
 
 
 class DPABIProcessor:
+    """
+    `config: dict` is from DPABI_V9.0_250415/DPARSF/DPARSF_run.m
+    """
+
     aligner: LLMEnhancedAligner = None
     working_dir: str = "./sub-02CB"
     config: dict = {
