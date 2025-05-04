@@ -3,6 +3,7 @@ from ollama import chat
 from ollama import ChatResponse
 import json
 import os
+from DataProcessor.DPABIProcessor import DPABIProcessor
 
 
 class Interface:
