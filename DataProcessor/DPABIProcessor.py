@@ -75,7 +75,7 @@ class DPABIProcessor:
         # Cfg['WorkingDir'] = r'D:\Code\neuro-pipe\Test_Data'
         Cfg['WorkingDir'] = working_dir
         Cfg['DataProcessDir'] = Cfg['WorkingDir']
-        Cfg['SubjectID'] = eng.cellstr(['Sub_01'])
+        # Cfg['SubjectID'] = eng.cellstr(['Sub_01'])
         # Cfg['SubjectID'] = eng.cellstr([])
         Cfg['TimePoints'] = 0
         Cfg['TR'] = 0
@@ -228,6 +228,11 @@ class DPABIProcessor:
         # 其他参数
         Cfg['FunctionalSessionNumber'] = 1
         Cfg['StartingDirName'] = 'FunRaw'
+        
+        assert os.path.isdir(os.path.join(Cfg['WorkingDir'], Cfg['StartingDirName']))
+        print(os.listdir(os.path.join(Cfg['WorkingDir'], Cfg['StartingDirName'])))
+        Cfg['SubjectID'] = eng.cellstr(os.listdir(os.path.join(Cfg['WorkingDir'], Cfg['StartingDirName'])))
+
         eng.DPARSF_run(Cfg, nargout=0)
 
 
