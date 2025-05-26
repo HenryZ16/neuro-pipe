@@ -9,6 +9,7 @@
 - MATLAB 2024b
 - Python 3.12
 - `requirements.txt`
+- 在`api-key.txt`中存放你的api-key
 
 ### Design
 #### JSONInput
@@ -18,3 +19,6 @@
 
 #### MatlabInterface
 直接使用Matlab提供的matlabengine包
+
+### Run
+使用 `python ./main.py` 运行。然后，根据程序提示，输入你希望大模型生成参数的数据路径
