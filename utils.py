@@ -1,4 +1,4 @@
-__DEBUG = True
+__DEBUG = False
 
 
 def debug_print(*args, **kwargs):
