@@ -1,7 +1,8 @@
 # from LLMAgent import LLMEnhancedAligner
 import os
 import matlab.engine
-
+import sys
+from io import StringIO
 
 class DPABIProcessor:
     """
@@ -267,15 +268,26 @@ class DPABIProcessor:
         Cfg["FunctionalSessionNumber"] = input["FunctionalSessionNumber"]
         Cfg["StartingDirName"] = input["StartingDirName"]
 
-        print(os.listdir(os.path.join(Cfg["WorkingDir"], Cfg["StartingDirName"])))
-        assert os.path.isdir(os.path.join(Cfg["WorkingDir"], Cfg["StartingDirName"]))
-        # Cfg['SubjectID'] = eng.cellstr(os.listdir(os.path.join(Cfg['WorkingDir'], Cfg['StartingDirName'])))
-        # print(Cfg['DPARSFVersion'])
-        # return
 
-        eng.DPARSF_run(Cfg, nargout=0)
-        eng.quit()
-        return
+        stdout_buffer = StringIO()
+        stderr_buffer = StringIO()
+        old_stdout = sys.stdout
+        old_stderr = sys.stderr
+        sys.stdout = stdout_buffer
+        sys.stderr = stderr_buffer
+        try:
+            assert os.path.isdir(os.path.join(Cfg["WorkingDir"], Cfg["StartingDirName"]))
+            eng.DPARSF_run(Cfg, nargout=0)
+            eng.quit()
+        except Exception as e:
+            import traceback
+            traceback.print_exc(file=sys.stderr)
+        finally:
+            sys.stdout = old_stdout
+            sys.stderr = old_stderr
+            captured_stdout = stdout_buffer.getvalue()
+            captured_stderr = stderr_buffer.getvalue()
+            return captured_stdout,captured_stderr
 
     def generate_report(self) -> str:
         pass
@@ -284,8 +296,8 @@ class DPABIProcessor:
 if __name__ == "__main__":
     cfg: dict = {
         "DPARSFVersion": "V9.0_250415",
-        "WorkingDir": "D:\\ShanghaiTech\\Courses\\Python\\group-5\\ProcessingDemoData",
-        "DataProcessDir": "D:\\ShanghaiTech\\Courses\\Python\\group-5\\ProcessingDemoData",
+        "WorkingDir": "D:\\Code\\neuro-pipe\\ProcessingDemoData",
+        "DataProcessDir": "D:\\Code\\neuro-pipe\\ProcessingDemoData",
         "SubjectID": {
             "sub02"
         },  # This would need to be converted to MATLAB cell array if using MATLAB engine
@@ -426,4 +438,12 @@ if __name__ == "__main__":
         "StartingDirName": "FunImg",
     }
     dpabi_processor = DPABIProcessor()
-    dpabi_processor.preprocess_data(cfg)
+    out,err = dpabi_processor.preprocess_data(cfg)
+    print()
+    print()
+    print()
+    print()
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    print(out)
+    print("<<<<<<<<<<<<<<")
+    print(err)
