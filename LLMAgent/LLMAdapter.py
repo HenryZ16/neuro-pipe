@@ -155,6 +155,13 @@ NIFTI元数据示例（首个文件）：
 {nii_metadata}
 """
 
+    ANALYZE_PROMPT = """你是一个专业的fMRI数据处理助手，需要帮助用户分析DPARSF处理的结果。请严格按照以下规则响应：
+1. 当用户提供处理结果的标准输出和错误输出时，分析这些输出内容
+2. 提取有用信息并生成一个JSON对象，包含以下字段：
+    - "suggestion": str，提供处理结果的建议或总结。如果“标准输出”和“错误输出”都为空，则返回"函数调用没有任何返回值"。
+3. 输出格式必须严格遵循以下内容，不得有任何其他内容，特别是"```json\\n"等内容：
+{"suggestion": str}"""
+
     def __init__(self, api_key_path: str = "./api-key.txt"):
         self.api_key = self._load_api_key(api_key_path)
         self.base_url = "https://api.deepseek.com/v1/chat/completions"
@@ -275,6 +282,18 @@ NIFTI元数据示例（首个文件）：
         # return eval(str(response["params"]))
         return response
 
+    def analyze_return_value(self, captured_stdout, captured_stderr):
+        messages = [
+            {"role": "system", "content": self.ANALYZE_PROMPT},
+            {
+                "role": "user",
+                "content": f"标准输出：{captured_stdout}\n错误输出：{captured_stderr}",
+            },
+        ]
+        response = self._call_llm(messages)
+
+        return response["suggestion"]
+
     def process_pipeline(self, user_input: str):
         # Step 1: 解析用户意图
         intent = self.parse_user_intent(user_input)
@@ -284,15 +303,15 @@ NIFTI元数据示例（首个文件）：
         params = self.validate_and_generate_params(intent["data_path"])
         print("生成的参数：" + json.dumps(params, indent=2))
 
-        # params["params"]["SliceTiming"]["SliceOrder"] = list(range(1, 34, 2)) + list(
-        #     range(2, 33, 2)
-        # )
-
         # Step 3: 调用DPABIProcessor
         from DataProcessor.DPABIProcessor import DPABIProcessor
 
         processor = DPABIProcessor()
-        processor.preprocess_data(params["params"])
+        captured_stdout, captured_stderr = processor.preprocess_data(params["params"])
+
+        # Step 4: 分析处理结果
+        analysis_result = self.analyze_return_value(captured_stdout, captured_stderr)
+        print("处理结果分析:", analysis_result)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ import matlab.engine
 import sys
 from io import StringIO
 
+
 class DPABIProcessor:
     """
     `config: dict` is from DPABI_V9.0_250415/DPARSF/DPARSF_run.m
@@ -268,7 +269,6 @@ class DPABIProcessor:
         Cfg["FunctionalSessionNumber"] = input["FunctionalSessionNumber"]
         Cfg["StartingDirName"] = input["StartingDirName"]
 
-
         stdout_buffer = StringIO()
         stderr_buffer = StringIO()
         old_stdout = sys.stdout
@@ -276,18 +276,21 @@ class DPABIProcessor:
         sys.stdout = stdout_buffer
         sys.stderr = stderr_buffer
         try:
-            assert os.path.isdir(os.path.join(Cfg["WorkingDir"], Cfg["StartingDirName"]))
+            assert os.path.isdir(
+                os.path.join(Cfg["WorkingDir"], Cfg["StartingDirName"])
+            )
             eng.DPARSF_run(Cfg, nargout=0)
             eng.quit()
         except Exception as e:
             import traceback
+
             traceback.print_exc(file=sys.stderr)
         finally:
             sys.stdout = old_stdout
             sys.stderr = old_stderr
             captured_stdout = stdout_buffer.getvalue()
             captured_stderr = stderr_buffer.getvalue()
-            return captured_stdout,captured_stderr
+            return captured_stdout, captured_stderr
 
     def generate_report(self) -> str:
         pass
@@ -438,7 +441,7 @@ if __name__ == "__main__":
         "StartingDirName": "FunImg",
     }
     dpabi_processor = DPABIProcessor()
-    out,err = dpabi_processor.preprocess_data(cfg)
+    out, err = dpabi_processor.preprocess_data(cfg)
     print()
     print()
     print()
