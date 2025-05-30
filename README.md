@@ -7,6 +7,8 @@
 
 ### Requirements
 - MATLAB 2024b
+  - SPM 25.01.02
+  - Image Processing Toolbox 24
 - Python 3.12
 - `requirements.txt`
 - 在`api-key.txt`中存放你的api-key
