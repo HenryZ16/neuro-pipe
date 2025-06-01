@@ -22,6 +22,8 @@ NeuroPipe是一个接受用户以自然语言描述的，预处理.nii文件的A
 
 ### Requirements
 - MATLAB 2024b
+  - SPM 25.01.02
+  - Image Processing Toolbox 24
 - Python 3.12
 - `requirements.txt`
 - 在`api-key.txt`中存放你的api-key
